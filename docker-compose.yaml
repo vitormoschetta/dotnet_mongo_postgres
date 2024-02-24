@@ -13,3 +13,14 @@ services:
       MONGO_INITDB_ROOT_HOST: localhost
       MONGO_INITDB_ROOT_PORT: 27017
       MONGO_INITDB_ROOT_AUTH_SOURCE: admin
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: "no"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Postgres@123
+      POSTGRES_DB: postgresdb
+    ports:
+      - 5432:5432

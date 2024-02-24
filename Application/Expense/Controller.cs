@@ -1,7 +1,5 @@
-using dotnet_mongodb.Data;
 using dotnet_mongodb.Application.Shared;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 using Microsoft.AspNetCore.Authorization;
 using dotnet_mongodb.Application.User;
 
@@ -13,18 +11,18 @@ namespace dotnet_mongodb.Application.Expense;
 public class ExpenseController : ControllerBase
 {
     private readonly ExpenseService _service;
-    private readonly MongoDbContext _db;
+    private readonly IExpenseRepository _repository;
 
-    public ExpenseController(ExpenseService service, MongoDbContext db)
+    public ExpenseController(ExpenseService service, IExpenseRepository repository)
     {
         _service = service;
-        _db = db;
+        _repository = repository;
     }
 
     [HttpGet]
     public ActionResult<IEnumerable<ExpenseEntity>> Get([FromRoute] Guid creditCardId, [FromQuery] string? tag)
     {
-        var expenses = _db.Expenses.Find(x => x.CreditCardId == creditCardId).ToList();
+        var expenses = _repository.GetByCreditCardId(creditCardId);
         if (!string.IsNullOrEmpty(tag))
         {
             expenses = expenses.Where(x => x.Tags.Contains(tag)).ToList();
@@ -37,7 +35,7 @@ public class ExpenseController : ControllerBase
     {
         if (Guid.TryParse(id, out Guid guidID) && guidID != Guid.Empty)
         {
-            return _db.Expenses.Find(x => x.Id == guidID).FirstOrDefault();
+            return _repository.GetById(guidID);
         }
         return NotFound();
     }

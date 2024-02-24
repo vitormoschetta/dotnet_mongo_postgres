@@ -6,7 +6,7 @@ using dotnet_mongodb.Application.User;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace dotnet_mongodb.Data
+namespace dotnet_mongodb.Data.Mongo
 {
     public class MongoDbContext
     {

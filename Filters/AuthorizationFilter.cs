@@ -1,5 +1,4 @@
 using dotnet_mongodb.Application.Shared;
-using dotnet_mongodb.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MongoDB.Driver;

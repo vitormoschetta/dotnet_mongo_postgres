@@ -4,10 +4,11 @@ using dotnet_mongodb.Application.Expense;
 using dotnet_mongodb.Application.Shared;
 using dotnet_mongodb.Application.Tag;
 using dotnet_mongodb.Application.User;
-using dotnet_mongodb.Data;
+using dotnet_mongodb.Data.Postgres;
 using dotnet_mongodb.Filters;
 using dotnet_mongodb.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -32,6 +33,18 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CreditCardService>();
 builder.Services.AddScoped<ExpenseService>();
 builder.Services.AddScoped<TagService>();
+
+// eleger entre mongo o postgres
+// builder.Services.AddScoped<IUserRepository, UserPostgresRepository>();
+// builder.Services.AddScoped<ICreditCardRepository, CreditCardPostgresRepository>();
+// builder.Services.AddScoped<IExpenseRepository, ExpensePostgresRepository>();
+// builder.Services.AddScoped<ITagRepository, TagPostgresRepository>();
+builder.Services.AddScoped<IUserRepository, UserMongoRepository>();
+builder.Services.AddScoped<ICreditCardRepository, CreditCardMongoRepository>();
+builder.Services.AddScoped<IExpenseRepository, ExpenseMongoRepository>();
+builder.Services.AddScoped<ITagRepository, TagMongoRepository>();
+
+
 builder.Services.AddScoped<Jwt>();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -90,7 +103,18 @@ builder.Services
         };
     });
 
+builder.Services.AddDbContext<PostgresDbContext>(options =>
+    options.UseNpgsql(builder.Configuration["PostgresDb:ConnectionString"] ?? throw new Exception("PostgresDb:ConnectionString not found")));
+
 var app = builder.Build();
+
+// Apply Postgres migrations
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<PostgresDbContext>();
+    if (dataContext.Database.IsRelational() && dataContext.Database.GetPendingMigrations().Any())
+        dataContext.Database.Migrate();
+}
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

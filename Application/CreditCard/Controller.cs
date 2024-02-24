@@ -1,8 +1,6 @@
-using dotnet_mongodb.Data;
 using dotnet_mongodb.Application.Shared;
 using dotnet_mongodb.Application.User;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_mongodb.Application.CreditCard;
@@ -13,19 +11,19 @@ namespace dotnet_mongodb.Application.CreditCard;
 public class CreditCardController : ControllerBase
 {
     private readonly CreditCardService _service;
-    private readonly MongoDbContext _db;
+    private readonly ICreditCardRepository _repository;
 
-    public CreditCardController(CreditCardService service, MongoDbContext db)
+    public CreditCardController(CreditCardService service, ICreditCardRepository repository)
     {
         _service = service;
-        _db = db;
+        _repository = repository;
     }
 
     [HttpGet]
     public ActionResult<IEnumerable<CreditCardEntity>> Get()
     {
         var user = HttpContext.Items[AttributeKeys.User] as UserEntity ?? throw new UnauthorizedAccessException("Usuário não encontrado");
-        var creditCards = _db.CreditCards.Find(x => x.UserEmail == user.Email).ToList();
+        var creditCards = _repository.GetByUserEmail(user.Email);
         return Ok(creditCards);
     }
 
@@ -34,7 +32,7 @@ public class CreditCardController : ControllerBase
     {
         if (Guid.TryParse(id, out Guid guidID) && guidID != Guid.Empty)
         {
-            return _db.CreditCards.Find(x => x.Id == guidID).FirstOrDefault();
+            return _repository.GetById(guidID);
         }   
         return NotFound();
     }

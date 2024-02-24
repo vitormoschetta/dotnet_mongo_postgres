@@ -1,17 +1,14 @@
-using dotnet_mongodb.Data;
 using dotnet_mongodb.Application.Shared;
-using dotnet_mongodb.Application.User;
-using MongoDB.Driver;
 
 namespace dotnet_mongodb.Application.Tag;
 
 public class TagService
 {
-    private readonly MongoDbContext _db;
+    private readonly ITagRepository _repository;
 
-    public TagService(MongoDbContext db)
+    public TagService(ITagRepository repository)
     {
-        _db = db;
+        _repository = repository;
     }
 
     public Output Execute(TagCreateInput input, string userEmail)
@@ -21,12 +18,12 @@ public class TagService
 
         var entity = input.ToEntity(userEmail);
 
-        var recorded = _db.Tags.Find(x => x.Title == entity.Title && x.UserEmail == entity.UserEmail).FirstOrDefault();
+        var recorded = _repository.GetByUserEmailAndTitle(userEmail, input.Title);
 
         if (recorded != null)
             return Output.Fail(EDomainCode.AlreadyExists, "Já existe uma tag com esse título");
 
-        _db.Tags.InsertOne(entity);
+        _repository.Create(entity);
 
         return Output.Ok(entity);
     }

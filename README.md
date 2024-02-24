@@ -29,4 +29,12 @@ http://localhost:5000/swagger/index.html
 Sample queries path: `Data/Samples`
 
 
+## Postgres
+
+Run Migration
+```bash
+dotnet ef migrations add initial -s dotnet_mongodb.csproj -o ./Data/Postgres/Migrations
+dotnet ef database update -s dotnet_mongodb.csproj
+```
+
 

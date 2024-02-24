@@ -33,3 +33,6 @@ public class CreditCardCreateInputValidator : AbstractValidator<CreditCardCreate
             .WithMessage("O título deve conter pelo menos 3 caracteres");
     }
 }
+
+// public class CreditCardDeleteInput : DeleteBaseInput
+// { }

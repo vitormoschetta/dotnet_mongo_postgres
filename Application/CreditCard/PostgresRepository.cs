@@ -31,4 +31,14 @@ public class CreditCardPostgresRepository : ICreditCardRepository
     {
         return _db.CreditCards.FirstOrDefault(x => x.UserEmail == userEmail && x.Title == title);
     }
+
+    // public void Delete(Guid id)
+    // {
+    //     var entity = _db.CreditCards.Find(id);
+    //     if (entity == null)
+    //         return;
+
+    //     _db.CreditCards.Remove(entity);
+    //     _db.SaveChanges();
+    // }
 }

@@ -47,5 +47,19 @@ docker-compose up -d dotnet-mongo
 docker-compose up -d dotnet-postgres
 ```
 
+Install Jq
+```bash
+brew install jq
+```
 
+Install Bombardier
+```bash
+brew install bombardier
+```
+
+Run Tests
+```bash
+sh ./Tests/Performance/creditcard-get-mongo-test.sh
+sh ./Tests/Performance/creditcard-get-postgres-test.sh
+```
 

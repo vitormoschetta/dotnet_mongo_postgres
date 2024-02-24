@@ -6,4 +6,5 @@ public interface ICreditCardRepository
     IEnumerable<CreditCardEntity> GetByUserEmail(string userEmail);
     CreditCardEntity? GetById(Guid id);
     CreditCardEntity? GetByUserEmailAndTitle(string userEmail, string title);
+    // void Delete(Guid id);
 }

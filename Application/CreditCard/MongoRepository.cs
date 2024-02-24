@@ -33,4 +33,9 @@ public class CreditCardMongoRepository : ICreditCardRepository
         var find = _db.CreditCards.Find(x => x.UserEmail == userEmail && x.Title == title);
         return find.FirstOrDefault();
     }
+
+    // public void Delete(Guid id)
+    // {
+    //     _db.CreditCards.DeleteOne(x => x.Id == id);
+    // }
 }

@@ -6,6 +6,7 @@ namespace dotnet_mongodb.Application.Shared
         InternalError = 1,
         NotFound = 2,
         InvalidInput = 3,
-        AlreadyExists = 4
+        AlreadyExists = 4,
+        Unauthorized = 5
     }
 }

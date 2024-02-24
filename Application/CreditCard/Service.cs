@@ -28,4 +28,24 @@ public class CreditCardService
 
         return Output.Ok(entity);
     }
+
+    // public Output Execute(CreditCardDeleteInput input, UserEntity user)
+    // {
+    //     if (input.IsInvalid)
+    //         return Output.Fail(EDomainCode.InvalidInput, input.Errors);
+
+    //     var creditCard = _db.GetById(input.Id);
+
+    //     if (creditCard == null)
+    //         return Output.Fail(EDomainCode.NotFound, "Cartão de crédito não encontrado");
+
+    //     if (creditCard.UserEmail != user.Email)
+    //         return Output.Fail(EDomainCode.Unauthorized, "Você não tem permissão para excluir esse cartão de crédito");
+
+        
+
+    //     _db.Delete(input.Id);
+
+    //     return Output.Ok();
+    // }
 }

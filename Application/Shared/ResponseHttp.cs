@@ -72,6 +72,12 @@ public class ResponseHttp
                     Errors = output.Errors,
                     Code = HttpStatusCode.Conflict
                 };
+            case EDomainCode.Unauthorized:
+                return new ResponseHttp
+                {
+                    Errors = output.Errors,
+                    Code = HttpStatusCode.Unauthorized
+                };
             case EDomainCode.InternalError:
                 return new ResponseHttp
                 {

@@ -45,4 +45,21 @@ public class CreditCardController : ControllerBase
         var res = ResponseHttp.Build(output, HttpMethod.Post);
         return StatusCode((int)res.Code, res);
     }
+
+    // [HttpDelete("{id}")]
+    // public ActionResult<Output> Delete([FromRoute] string id)
+    // {
+    //     if (Guid.TryParse(id, out Guid guidID) && guidID != Guid.Empty)
+    //     {
+    //         var user = HttpContext.Items[AttributeKeys.User] as UserEntity ?? throw new UnauthorizedAccessException("Usuário não encontrado");
+    //         var input = new CreditCardDeleteInput
+    //         {
+    //             Id = guidID
+    //         };
+    //         var output = _service.Execute(input, user);
+    //         var res = ResponseHttp.Build(output, HttpMethod.Delete);
+    //         return StatusCode((int)res.Code, res);
+    //     }
+    //     return NotFound();
+    // }
 }

@@ -12,7 +12,8 @@
 1. Clone the repository
 2. Run the following command to start the MongoDB container:
 ```bash
-docker-compose up -d
+docker-compose up -d mongodb
+docker-compose up -d postgres
 ```
 3. Run the following command to start the application:
 ```bash
@@ -36,5 +37,15 @@ Run Migration
 dotnet ef migrations add initial -s dotnet_mongodb.csproj -o ./Data/Postgres/Migrations
 dotnet ef database update -s dotnet_mongodb.csproj
 ```
+
+
+## Performance Tests
+
+Containers Up
+```bash
+docker-compose up -d dotnet-mongo
+docker-compose up -d dotnet-postgres
+```
+
 
 

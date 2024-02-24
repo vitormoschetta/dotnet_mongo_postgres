@@ -1,5 +1,10 @@
 version: '3.8'
 
+networks: 
+  internal:
+    driver: bridge
+    name: internal
+
 services:
   mongodb:
     image: mongo
@@ -13,6 +18,8 @@ services:
       MONGO_INITDB_ROOT_HOST: localhost
       MONGO_INITDB_ROOT_PORT: 27017
       MONGO_INITDB_ROOT_AUTH_SOURCE: admin
+    networks:
+      - internal
 
   postgres:
     image: postgres
@@ -24,3 +31,39 @@ services:
       POSTGRES_DB: postgresdb
     ports:
       - 5432:5432
+    networks:
+      - internal
+
+  dotnet-mongo:
+    image: vitormoschetta/dotnet-mongo
+    container_name: dotnet-mongo-api
+    restart: "no"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5010:5000
+    depends_on:
+      - mongodb
+      - postgres
+    environment:
+      - DATABASE=mongo
+    networks:
+      - internal
+
+  dotnet-postgres:
+    image: vitormoschetta/dotnet-postgres
+    container_name: dotnet-postgres-api
+    restart: "no"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5020:5000
+    depends_on:
+      - mongodb
+      - postgres
+    environment:
+      - DATABASE=postgres
+    networks:
+      - internal

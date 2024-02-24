@@ -34,23 +34,34 @@ builder.Services.AddScoped<CreditCardService>();
 builder.Services.AddScoped<ExpenseService>();
 builder.Services.AddScoped<TagService>();
 
-// eleger entre mongo o postgres
-// builder.Services.AddScoped<IUserRepository, UserPostgresRepository>();
-// builder.Services.AddScoped<ICreditCardRepository, CreditCardPostgresRepository>();
-// builder.Services.AddScoped<IExpenseRepository, ExpensePostgresRepository>();
-// builder.Services.AddScoped<ITagRepository, TagPostgresRepository>();
-builder.Services.AddScoped<IUserRepository, UserMongoRepository>();
-builder.Services.AddScoped<ICreditCardRepository, CreditCardMongoRepository>();
-builder.Services.AddScoped<IExpenseRepository, ExpenseMongoRepository>();
-builder.Services.AddScoped<ITagRepository, TagMongoRepository>();
-
+if (Environment.GetEnvironmentVariable("DATABASE") == "postgres")
+{
+    builder.Services.AddScoped<IUserRepository, UserPostgresRepository>();
+    builder.Services.AddScoped<ICreditCardRepository, CreditCardPostgresRepository>();
+    builder.Services.AddScoped<IExpenseRepository, ExpensePostgresRepository>();
+    builder.Services.AddScoped<ITagRepository, TagPostgresRepository>();
+}
+else
+{
+    builder.Services.AddScoped<IUserRepository, UserMongoRepository>();
+    builder.Services.AddScoped<ICreditCardRepository, CreditCardMongoRepository>();
+    builder.Services.AddScoped<IExpenseRepository, ExpenseMongoRepository>();
+    builder.Services.AddScoped<ITagRepository, TagMongoRepository>();
+}
 
 builder.Services.AddScoped<Jwt>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new() { Title = "Pfm.Api", Version = "v1" });
+        var version = "v1";
+        var title = ".NET MongoDB";
+        if (Environment.GetEnvironmentVariable("DATABASE") == "postgres")
+        {
+            title = ".NET Postgres";
+        }
+
+        c.SwaggerDoc(version, new() { Title = title, Version = version });
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Description = @"
@@ -109,11 +120,14 @@ builder.Services.AddDbContext<PostgresDbContext>(options =>
 var app = builder.Build();
 
 // Apply Postgres migrations
-using (var scope = app.Services.CreateScope())
+if (Environment.GetEnvironmentVariable("DATABASE") == "postgres")
 {
-    var dataContext = scope.ServiceProvider.GetRequiredService<PostgresDbContext>();
-    if (dataContext.Database.IsRelational() && dataContext.Database.GetPendingMigrations().Any())
-        dataContext.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var dataContext = scope.ServiceProvider.GetRequiredService<PostgresDbContext>();
+        if (dataContext.Database.IsRelational() && dataContext.Database.GetPendingMigrations().Any())
+            dataContext.Database.Migrate();
+    }
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
